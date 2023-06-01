@@ -10,6 +10,20 @@ export const ProductsList = () => {
     const localKandyUser = localStorage.getItem("kandy_user")
     const kandyUserObject = JSON.parse(localKandyUser)
 
+    
+    useEffect(() => {
+        const sortedProducts = products.sort((a, b) => {
+            if (a.name < b.name) {
+            return -1;
+            }
+            if (a.name > b.name) {
+            return 1;
+            }
+            return 0;
+          });
+        setFilteredProducts(sortedProducts);
+    }, [products]);
+    
     useEffect(
         () => {
             if (expensive) {
