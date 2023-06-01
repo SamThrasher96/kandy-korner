@@ -4,34 +4,56 @@ import "./products.css"
 
 export const ProductsList = () => {
     const [products, setProducts] = useState([])
+    const [filteredProducts, setFilteredProducts] = useState([])
+    const [expensive, setExpensive] = useState(false)
 
-const localKandyUser = localStorage.getItem("kandy_user")
-const kandyUserObject = JSON.parse(localKandyUser)
+    const localKandyUser = localStorage.getItem("kandy_user")
+    const kandyUserObject = JSON.parse(localKandyUser)
+
+    useEffect(
+        () => {
+            if (expensive) {
+                const topPrice = products.filter(product => product.pricePerUnit >= 2)
+            setFilteredProducts(topPrice)
+        }
+        else {
+            setFilteredProducts(products)
+        }
+        },
+        [expensive]
+    )
 
 
     useEffect(
         () => {
-            fetch(`http://localhost:8088/productss`)
+            fetch(`http://localhost:8088/products?_expand=productType`)
                 .then(response => response.json())
                 .then((productsArray) => {
                     setProducts(productsArray)
                 })
+                setFilteredProducts(products)
         },
 
         []
     )
 
-return <>
+return <> 
+    <button onClick={ () => {setExpensive(true)}}>Top Price</button>
+    <button onClick={ () => {setExpensive(false)}}>Show All</button>
+
     <h2>List of Products</h2>
 
 <article className = "products">
     {
-    products.map(
+    filteredProducts.map(
             (product) => {
+                const finalPrice = product.pricePerUnit.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD"})
                 return <section className="product" key={product.id}>
-                    <header> {product.name}: {product.price.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD"})} </header>
+                    <header>Kandy name: {product.name} </header>
+                    <header>Kandy price: {finalPrice} </header>
+                    <footer>Product type: {product.productType.type} </footer>
                 </section>
             }
         )
@@ -39,11 +61,3 @@ return <>
 </article>
 </>
 }
-
-/*
-        const orderPrice = sale.entree.price + sale.vegetable.price + sale.side.price
-            const finalOrderPrice = orderPrice.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD"})
-        return `<div>Receipt #${sale.id} = ${finalOrderPrice}</div>`
-*/
