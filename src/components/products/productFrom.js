@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 export const ProductForm = () => {
     const [product, update] = useState({
         name: "",
-        productTypeId: "",
-        pricePerUnit: "",
+        productTypeId: 0,
+        pricePerUnit: 0,
     });
 
 const navigate = useNavigate();
@@ -17,10 +17,11 @@ const handleSaveButtonClick = (event) => {
 
 const productToSendToApi = {
     name: product.name,
-    productType: +product.productTypeId,
-    price: +product.pricePerUnit,
+    productTypeId: product.productTypeId,
+    pricePerUnit: product.pricePerUnit,
 };
 
+if (product.name !== "" && product.productTypeId > 0 && product.pricePerUnit >0 )
     return fetch(`http://localhost:8088/products`, {
         method: "POST",
         headers: {
@@ -65,6 +66,8 @@ return (
             }}
         />
         </div>
+    </fieldset>
+    <fieldset>
         <div className="form-group">
             <label htmlFor="productTypeId">Product Type</label>
             <select
@@ -79,17 +82,20 @@ return (
             }
         }
         >
-            <option value="" selected>Select Candy Type</option>
+            <option value="" defaultValue>Select Candy Type</option>
             {productTypes.map(item => (
                 <option value={item.id} key={item.id}>{item.type}</option>
             ))}
         </select>
         </div>
+        </fieldset>
+        <fieldset>
         <div className="form-group">
             <label htmlFor="pricePerUnit">Price Per Unit</label>
             <input
             required
             type="number"
+            min="1"
             className="form-control"
             placeholder="New candy price per unit"
             value={product.pricePerUnit}

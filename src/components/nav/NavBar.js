@@ -15,10 +15,10 @@ export const NavBar = () => {
             {
                 localStorage.getItem("kandy_user")
                     ? <li className= "navbar__item navbar__logout">
-                        <Link className="navbar" to="" onClick={() => {
-                            localStorage. removeItem ("kandy _user")
+                        <Link className="navbar link" to="" onClick={() => {
+                            localStorage. removeItem ("kandy_user")
                             navigate ("/", { replace: true })
-                        }}> Logouts</Link>
+                        }}> Logout</Link>
                     </li>
                     : ""
                     }
